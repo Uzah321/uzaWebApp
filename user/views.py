@@ -1,26 +1,28 @@
+from django.contrib import auth, messages
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .forms import CreateUserForm, LoginForm
-
+from .forms import CreateUserForm, LoginForm, UserUpdateForm, ProfileUpdateForm
 # Create your views here.
 def register(request):
     if request.method == 'POST':
         form = CreateUserForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('dashboard-index')
+            return redirect('user-login')
     else:
         form = CreateUserForm()            
     context = {
         'form': form
     }
-    return render(request, 'user/register.html',context) 
+    return render(request, 'user/register.html',context)  
 
 def logout(request):
-    django_logout(request) # type: ignore
-    # Redirect to a success page
-    return redirect('user-login') 
+    auth.logout(request) 
+    messages.success(request, 'You have been Logged out')
+    return redirect('user-logout') 
+
 
 def login_view(request):
     if request.method == 'POST':
@@ -40,3 +42,18 @@ def login_view(request):
     
     return render(request, 'user/login.html', {'form': form})
             
+def profile(request):
+    return render(request, 'user/profile.html')      
+
+def profile_update(request):
+    if request.method == 'POST':
+        user_form = UserUpdateForm(request.POST, instance=request.user)
+        profile_form = ProfileUpdateForm( request.POST, request.FILES, instance=request.user.profile)
+    else:
+        user_form =  UserUpdateForm(instance=request.user)
+        profile_form =  ProfileUpdateForm(instance=request.user.profile)  
+    context = {
+        'use_form':user_form,
+        'profile_form':profile_form,
+    }
+    return render(request, 'user/profile_update.html', context)      

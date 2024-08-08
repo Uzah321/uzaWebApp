@@ -54,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'uzaProject.urls'
@@ -115,6 +116,10 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 CRISPY_TEMPLATE_PACK = 'bootstrap4' 
 
+# Authentication backends
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
@@ -134,6 +139,10 @@ STATICFILES_DIRS = [
     # Add other directories here if needed
 ]
 
+STATICFILES_DIRS = [
+    'C:/Users/Uzah01/Desktop/DJANGO/uzaProject/uzaApp/static/',
+]
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
@@ -147,8 +156,17 @@ STATIC_ROOT = (BASE_DIR/"asert/")
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Optional: Redirect users to login if not authenticated
-LOGIN_URL = '/login/'
+LOGIN_URL = 'user-login'
 
 LOGIN_REDIRECT_URL = '/home/'
 # myproject/settings.py
  
+MEDIA_ROOT = (BASE_DIR / 'media')
+
+MEDIA_URL = '/media/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'uzaApp/static'),
+]
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+

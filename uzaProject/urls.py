@@ -22,6 +22,8 @@ from django.conf.urls.static import static
 from django.conf import settings
 from user import views as user_view
 from django.contrib.auth import views as auth_views
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 urlpatterns = [
@@ -31,12 +33,15 @@ urlpatterns = [
     path('product/', views.product, name='dashboard-product'),
     path('order/', views.order, name='dashboard-order'),
     path('register/', user_view.register, name='user-register'),
-    path('login/', auth_views.LoginView.as_view(template_name='user/login.html'), name='user-login'),
-    path('logout/', auth_views.LogoutView.as_view(template_name='user/logout.html'), name='user-logout'),
-    path('login/', views.login_view, name='user-login'),
+    path('profile/', user_view.profile, name='user-profile'),
+    path('user/profile/update/', user_view.profile_update, name='user-profile-update'),
+    path('logout/', views.logout, name='user-logout'),
+    path('', views.login_view, name='user-login'),
     #path('user/', include('user.urls')),
     #path('', include('uzaApp.urls')),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)    
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+  
