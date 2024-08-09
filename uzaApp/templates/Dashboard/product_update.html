@@ -11,7 +11,6 @@
             <form method="POST">
                 {% csrf_token %}
                 {{ form|crispy }}
-                {{ form }}
                 <hr></hr>
                 <a class="btn btn-secondary btn-sm" href="{% url 'dashboard-product' %}">Cancel</a>
                 <input class="btn btn-danger btn-sm" type="submit" value="Update">
