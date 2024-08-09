@@ -20,7 +20,7 @@ def product(request):
 
     if request.method =='POST':
         form = ProductForm(request.POST)
-        if form.isvalid():
+        if form.is_valid():
             form.save()
             return redirect('dashboard-product')
     else:
@@ -57,3 +57,33 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect(reverse('user-logout'))
+
+
+
+#@login_required(login_url='user-login')
+#@allowed_users(allowed_roles=['Admin'])
+def product_delete(request, pk):
+    item = Product.objects.get(id=pk)
+    if request.method == 'POST':
+        item.delete()
+        return redirect('dashboard-product')
+    context = {
+        'item': item
+    }
+    return render(request, 'dashboard/product_delete.html', context)
+
+#@login_required(login_url='user-login')
+#@allowed_users(allowed_roles=['Admin'])
+def product_update(request, pk):
+    item = Product.objects.get(id=pk)
+    if request.method == 'POST':
+        form = ProductForm(request.POST, instance=item)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard-products')
+    else:
+        form = ProductForm(instance=item)
+    context = {
+        'form': form,
+    }
+    return render(request, 'dashboard/product_update.html', context)
