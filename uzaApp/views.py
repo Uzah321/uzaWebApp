@@ -1,3 +1,4 @@
+from django.http import request
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
@@ -5,6 +6,8 @@ from user.forms import LoginForm
 from django.contrib.auth.decorators import login_required
 from .models import Product
 from .forms import ProductForm
+from django.contrib.auth.models import User
+
 
 @login_required(login_url='user-login')
 def index(request):
@@ -12,12 +15,23 @@ def index(request):
 
 @login_required(login_url='user-login')
 def staff(request):
-    return render(request, 'dashboard/staff.html')
+    workers = User.objects.all()
+    context={
+        'workers':workers
+    }
+    return render(request, 'dashboard/staff.html', context)
+
+@login_required(login_url='user-login')
+def staff_detail(request, pk):
+    workers = User.objects.get(id=pk)
+    context = {
+        'workers': workers,
+    }
+    return render(request, 'dashboard/staff_detail.html', context)
 
 @login_required(login_url='user-login')
 def product(request):
-    items = Product.objects.all()
-
+    items = Product.objects.all()    
     if request.method =='POST':
         form = ProductForm(request.POST)
         if form.is_valid():
@@ -35,6 +49,7 @@ def product(request):
 @login_required(login_url='user-login')
 def order(request):
     return render(request, 'dashboard/order.html')
+
 
 def login_view(request):
     if request.method == 'POST':
@@ -60,8 +75,7 @@ def logout_view(request):
 
 
 
-#@login_required(login_url='user-login')
-#@allowed_users(allowed_roles=['Admin'])
+@login_required(login_url='user-login')
 def product_delete(request, pk):
     item = Product.objects.get(id=pk)
     if request.method == 'POST':
@@ -72,8 +86,7 @@ def product_delete(request, pk):
     }
     return render(request, 'dashboard/product_delete.html', context)
 
-#@login_required(login_url='user-login')
-#@allowed_users(allowed_roles=['Admin'])
+@login_required(login_url='user-login')
 def product_update(request, pk):
     item = Product.objects.get(id=pk)
     if request.method == 'POST':
