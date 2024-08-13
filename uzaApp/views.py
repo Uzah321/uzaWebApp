@@ -4,14 +4,31 @@ from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from user.forms import LoginForm
 from django.contrib.auth.decorators import login_required
-from .models import Product
-from .forms import ProductForm
+from .models import Product, Order
+from .forms import ProductForm, OrderForm
 from django.contrib.auth.models import User
 
 
 @login_required(login_url='user-login')
 def index(request):
-    return render(request, 'dashboard/index.html')
+    orders = Order.objects.all()
+    if request.method == 'POST':
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.staff = request.user
+            instance.save()
+            return redirect('dashboard-index')
+           
+    else:
+        form = OrderForm()
+
+    context = {
+        'orders':orders,
+        'form': form,
+    }
+
+    return render(request, 'dashboard/index.html', context)
 
 @login_required(login_url='user-login')
 def staff(request):
@@ -48,7 +65,13 @@ def product(request):
 
 @login_required(login_url='user-login')
 def order(request):
-    return render(request, 'dashboard/order.html')
+    orders = Order.objects.all()
+
+    context = {
+        'orders':orders,
+    }
+
+    return render(request, 'dashboard/order.html', context)
 
 
 def login_view(request):

@@ -25,7 +25,7 @@ def register(request):
 
 def profile(request):
     context = {
-
+        
     }
     return render(request, 'user/profile.html', context)
 
